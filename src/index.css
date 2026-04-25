@@ -23,6 +23,10 @@ body {
   color: var(--text);
 }
 
+#root {
+  min-height: 100vh;
+}
+
 .app {
   max-width: 1320px;
   margin: 0 auto;
@@ -978,6 +982,20 @@ code {
   user-select: none;
   color: var(--muted);
   font-size: 0.95em;
+}
+
+.app-error {
+  background: #21262d;
+  border: 1px solid var(--warn);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+  color: #e6edf3;
+  font-size: 0.92rem;
+}
+
+.app-error p {
+  margin: 0;
 }
 
 .modal-wide {

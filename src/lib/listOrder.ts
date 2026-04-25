@@ -81,10 +81,14 @@ export function loadStoredCustomOrder(sessionId: string): string[] | null {
 }
 
 export function saveStoredCustomOrder(sessionId: string, ids: string[] | null) {
-  const k = `mtt-list-order-${sessionId}`;
-  if (ids == null || ids.length === 0) {
-    localStorage.removeItem(k);
-  } else {
-    localStorage.setItem(k, JSON.stringify(ids));
+  try {
+    const k = `mtt-list-order-${sessionId}`;
+    if (ids == null || ids.length === 0) {
+      localStorage.removeItem(k);
+    } else {
+      localStorage.setItem(k, JSON.stringify(ids));
+    }
+  } catch (e) {
+    console.warn("ModelTransparencyTester: could not save list order to localStorage", e);
   }
 }

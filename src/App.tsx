@@ -37,13 +37,29 @@ export function App() {
   const initialSeed = useRef(readSeed());
   const [seed, setSeed] = useState(() => initialSeed.current);
   const [tab, setTab] = useState<Tab>("a");
-  const [session, setSession] = useState<SessionRecord | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [listOrderOpen, setListOrderOpen] = useState(false);
   const [customOrderIds, setCustomOrderIds] = useState<string[] | null>(null);
   const [lastListOrderInvalid, setLastListOrderInvalid] = useState<string[]>([]);
   const [listRevision, setListRevision] = useState(0);
-  const booted = useRef(false);
+
+  const [session, setSession] = useState<SessionRecord | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const s0 = initialSeed.current;
+      const s = createSession(s0, "auto");
+      const s2 = appendEvent(s, "session_start", { seed: s0, catalogSize: CATALOG.length });
+      try {
+        persistSession(s2);
+      } catch {
+        // Storage may be blocked; in-memory session still works
+      }
+      return s2;
+    } catch (e) {
+      console.error("ModelTransparencyTester: session init failed", e);
+      return null;
+    }
+  });
 
   const append = useCallback((type: string, payload: Record<string, unknown>) => {
     setSession((prev) => {
@@ -58,17 +74,6 @@ export function App() {
     () => buildOrderedCatalog(CATALOG, seed, customOrderIds),
     [seed, customOrderIds]
   );
-
-  /** One-time auto start: no “open session” step. */
-  useEffect(() => {
-    if (booted.current) return;
-    booted.current = true;
-    const s0 = initialSeed.current;
-    const s = createSession(s0, "auto");
-    const s2 = appendEvent(s, "session_start", { seed: s0, catalogSize: CATALOG.length });
-    setSession(s2);
-    persistSession(s2);
-  }, []);
 
   useEffect(() => {
     if (!session) return;
@@ -221,6 +226,15 @@ export function App() {
         lastInvalid={lastListOrderInvalid}
         onApply={(mode, ids) => applyListOrder(mode, ids)}
       />
+
+      {!session && (
+        <div className="app-error" role="alert">
+          <p>
+            Could not start a session. Enable JavaScript and try refreshing. If local storage is
+            blocked, allow it for this origin or the app may not save exports.
+          </p>
+        </div>
+      )}
 
       {session && (
         <>

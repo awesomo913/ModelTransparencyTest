@@ -19,7 +19,7 @@ export type SessionRecord = {
 const STORAGE_KEY = "model-transparency-tester-sessions";
 /** Earlier builds used this key; we migrate once so existing local logs are kept. */
 const LEGACY_STORAGE_KEY = "model-coworker-lab-sessions";
-const APP_VERSION = "1.5.0";
+const APP_VERSION = "1.5.1";
 
 function newId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -55,7 +55,11 @@ function loadAll(): SessionRecord[] {
 }
 
 function saveAll(rows: SessionRecord[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(rows, null, 0));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(rows, null, 0));
+  } catch (e) {
+    console.warn("ModelTransparencyTester: could not save sessions to localStorage", e);
+  }
 }
 
 export function createSession(seed: number, notes: string): SessionRecord {
@@ -82,11 +86,15 @@ export function appendEvent(
 }
 
 export function persistSession(session: SessionRecord) {
-  const all = loadAll();
-  const i = all.findIndex((s) => s.sessionId === session.sessionId);
-  if (i >= 0) all[i] = session;
-  else all.push(session);
-  saveAll(all);
+  try {
+    const all = loadAll();
+    const i = all.findIndex((s) => s.sessionId === session.sessionId);
+    if (i >= 0) all[i] = session;
+    else all.push(session);
+    saveAll(all);
+  } catch (e) {
+    console.warn("ModelTransparencyTester: persistSession failed", e);
+  }
 }
 
 export function listSessions(): SessionRecord[] {
