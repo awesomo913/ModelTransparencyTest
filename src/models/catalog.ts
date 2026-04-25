@@ -39,13 +39,17 @@ export const VENDOR_LABEL: Record<VendorId, string> = {
 };
 
 export const CATALOG: ModelEntry[] = [
-  // —— Anthropic / Claude (exhaustive product-style lines for search & blind layouts) ——
+  // —— Anthropic / Claude (product-style lines for search & blind layouts) ——
+  { id: "claude-opus-4-7", vendor: "anthropic", displayName: "Claude Opus 4.7", searchBlob: "anthropic claude opus 4.7 latest flagship" },
+  { id: "claude-opus-4-6", vendor: "anthropic", displayName: "Claude Opus 4.6", searchBlob: "anthropic claude opus 4.6" },
   { id: "claude-opus-4-5", vendor: "anthropic", displayName: "Claude Opus 4.5", searchBlob: "anthropic claude opus 4.5 max reasoning" },
   { id: "claude-opus-4-1", vendor: "anthropic", displayName: "Claude Opus 4.1", searchBlob: "anthropic claude opus 4.1" },
   { id: "claude-opus-4-0", vendor: "anthropic", displayName: "Claude Opus 4.0", searchBlob: "anthropic claude opus 4.0" },
-  { id: "claude-sonnet-4-6", vendor: "anthropic", displayName: "Claude Sonnet 4.6", searchBlob: "anthropic claude sonnet 4.6 latest" },
+  { id: "claude-sonnet-4-7", vendor: "anthropic", displayName: "Claude Sonnet 4.7", searchBlob: "anthropic claude sonnet 4.7" },
+  { id: "claude-sonnet-4-6", vendor: "anthropic", displayName: "Claude Sonnet 4.6", searchBlob: "anthropic claude sonnet 4.6" },
   { id: "claude-sonnet-4-5", vendor: "anthropic", displayName: "Claude Sonnet 4.5", searchBlob: "anthropic claude sonnet 4.5 coding" },
   { id: "claude-sonnet-4-0", vendor: "anthropic", displayName: "Claude Sonnet 4.0", searchBlob: "anthropic claude sonnet 4.0" },
+  { id: "claude-haiku-4-7", vendor: "anthropic", displayName: "Claude Haiku 4.7", searchBlob: "anthropic claude haiku 4.7" },
   { id: "claude-haiku-4-5", vendor: "anthropic", displayName: "Claude Haiku 4.5", searchBlob: "anthropic claude haiku 4.5 fast" },
   { id: "claude-haiku-4-0", vendor: "anthropic", displayName: "Claude Haiku 4.0", searchBlob: "anthropic claude haiku 4.0" },
   { id: "claude-3-7-sonnet", vendor: "anthropic", displayName: "Claude 3.7 Sonnet", searchBlob: "anthropic claude 3.7 sonnet" },
@@ -69,22 +73,34 @@ export const CATALOG: ModelEntry[] = [
   { id: "claude-research-sonnet-4-5", vendor: "anthropic", displayName: "Claude Sonnet 4.5 (research / agent SKU)", searchBlob: "anthropic claude research agent sonnet" },
   { id: "claude-coding-sonnet-4-5", vendor: "anthropic", displayName: "Claude Sonnet 4.5 (coding-optimized route)", searchBlob: "anthropic claude coding ide sonnet" },
   {
+    id: "gpt-5-3",
+    vendor: "openai",
+    displayName: "GPT-5.3",
+    searchBlob: "openai gpt-5.3",
+  },
+  {
     id: "gpt-5-2",
     vendor: "openai",
     displayName: "GPT-5.2 (coding track)",
-    searchBlob: "openai chatgpt",
+    searchBlob: "openai chatgpt gpt-5.2",
   },
   {
     id: "gpt-5-1-codex",
     vendor: "openai",
     displayName: "GPT-5.1-Codex",
-    searchBlob: "openai codex ide agent",
+    searchBlob: "openai codex ide agent gpt-5.1",
   },
   {
     id: "o3-pro",
     vendor: "openai",
     displayName: "o3 (high reasoning)",
     searchBlob: "openai o3",
+  },
+  {
+    id: "o4-mini",
+    vendor: "openai",
+    displayName: "o4-mini",
+    searchBlob: "openai o4 mini",
   },
   {
     id: "gpt-4-1",
@@ -99,22 +115,40 @@ export const CATALOG: ModelEntry[] = [
     searchBlob: "openai 4o multimodal",
   },
   {
+    id: "gpt-4-1-nano",
+    vendor: "openai",
+    displayName: "GPT-4.1-nano (fast / cheap route)",
+    searchBlob: "openai small fast",
+  },
+  {
     id: "google-gemini-3-pro",
     vendor: "google",
     displayName: "Gemini 3 Pro",
-    searchBlob: "google antigravity ide",
+    searchBlob: "google antigravity ide gemini 3",
   },
   {
     id: "google-gemini-2-5-pro",
     vendor: "google",
     displayName: "Gemini 2.5 Pro",
-    searchBlob: "google large context",
+    searchBlob: "google large context gemini 2.5 pro",
   },
   {
     id: "google-gemini-flash-2-5",
     vendor: "google",
     displayName: "Gemini 2.5 Flash",
-    searchBlob: "google fast",
+    searchBlob: "google fast gemini 2.5 flash",
+  },
+  {
+    id: "google-gemini-2-0-flash",
+    vendor: "google",
+    displayName: "Gemini 2.0 Flash",
+    searchBlob: "google gemini 2.0",
+  },
+  {
+    id: "google-gemini-1-5-pro",
+    vendor: "google",
+    displayName: "Gemini 1.5 Pro (long context)",
+    searchBlob: "google gemini 1.5",
   },
   {
     id: "google-gemini-interactions-agentic",
@@ -153,10 +187,16 @@ export const CATALOG: ModelEntry[] = [
     searchBlob: "mistral code completion",
   },
   {
+    id: "grok-4-5",
+    vendor: "xai",
+    displayName: "Grok 4.5",
+    searchBlob: "xai grok 4.5",
+  },
+  {
     id: "grok-4-20",
     vendor: "xai",
     displayName: "Grok 4.20 (coding)",
-    searchBlob: "xai twitter",
+    searchBlob: "xai grok 4.20",
   },
   {
     id: "grok-3",

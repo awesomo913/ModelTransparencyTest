@@ -972,3 +972,29 @@ code {
   padding-top: 0.5rem;
   border-top: 1px solid var(--border);
 }
+
+.mtt-build {
+  cursor: default;
+  user-select: none;
+  color: var(--muted);
+  font-size: 0.95em;
+}
+
+.modal-wide {
+  max-width: min(40rem, 100%);
+}
+
+.modal-foot-spread {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.modal-foot-right {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}

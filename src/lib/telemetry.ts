@@ -19,7 +19,7 @@ export type SessionRecord = {
 const STORAGE_KEY = "model-transparency-tester-sessions";
 /** Earlier builds used this key; we migrate once so existing local logs are kept. */
 const LEGACY_STORAGE_KEY = "model-coworker-lab-sessions";
-const APP_VERSION = "1.4.0";
+const APP_VERSION = "1.5.0";
 
 function newId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {

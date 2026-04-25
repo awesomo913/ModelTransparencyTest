@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { CATALOG, VENDOR_LABEL, type ModelEntry } from "../models/catalog";
-import { interleaveByVendor } from "../lib/shuffle";
+import { VENDOR_LABEL, type ModelEntry } from "../models/catalog";
+import type { ListOrderMode } from "../lib/listOrder";
 import { getAppVersion, type SessionRecord } from "../lib/telemetry";
 import { MOCK_REVIEW } from "../data/mockCodeReview";
 import { CopilotSparkIcon } from "./CopilotSparkIcon";
@@ -8,6 +8,11 @@ import { CopilotSparkIcon } from "./CopilotSparkIcon";
 type Props = {
   session: SessionRecord;
   onAppend: (type: string, payload: Record<string, unknown>) => void;
+  /** Resolved list (interleaved or custom). */
+  ordered: ModelEntry[];
+  orderMode: ListOrderMode;
+  /** Seed value shown in options (drives interleave when not custom). */
+  listSeed: number;
   defaultPrimaryId?: string;
   defaultSecondaryId?: string | null;
 };
@@ -26,13 +31,12 @@ function matchesQuery(m: ModelEntry, q: string) {
 export function CoworkerTest({
   session,
   onAppend,
+  ordered,
+  orderMode,
+  listSeed,
   defaultPrimaryId,
   defaultSecondaryId,
 }: Props) {
-  const ordered = useMemo(
-    () => interleaveByVendor(CATALOG, session.seed),
-    [session.seed]
-  );
   const [query, setQuery] = useState("");
   const [primaryId, setPrimaryId] = useState<string | null>(defaultPrimaryId ?? null);
   const [secondaryId, setSecondaryId] = useState<string | null>(defaultSecondaryId ?? null);
@@ -54,9 +58,11 @@ export function CoworkerTest({
     onAppend("coworker_mount", {
       test: "coworker",
       appVersion: getAppVersion(),
+      orderMode,
+      listSeed,
       listOrderIds: ordered.map((m) => m.id),
     });
-  }, [onAppend, ordered, session.sessionId]);
+  }, [onAppend, ordered, session.sessionId, orderMode, listSeed]);
 
   const commitSearchLog = useCallback(
     (q: string) => {
@@ -85,6 +91,8 @@ export function CoworkerTest({
       searchCommitCount,
       msToSubmit: elapsed,
       visibleCountAtSubmit: filtered.length,
+      orderMode,
+      listSeed,
       listOrderIds: ordered.map((m) => m.id),
     });
     onAppend("cohort", { test: "coworker", primaryId, secondaryId });
@@ -183,8 +191,7 @@ export function CoworkerTest({
               </button>
             </div>
             <p className="cp-meta">
-              {filtered.length} of {ordered.length} shown · list order is shuffled (seed) · search
-              steps: {searchCommitCount}
+              {filtered.length} of {ordered.length} shown · search steps: {searchCommitCount}
             </p>
             <div className="cp-picks">
               {primaryId && (

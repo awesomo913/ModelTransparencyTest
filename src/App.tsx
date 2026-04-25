@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { CATALOG } from "./models/catalog";
 import { CoworkerTest } from "./components/CoworkerTest";
 import { HeadToHeadTest } from "./components/HeadToHeadTest";
 import { LocalPreviewHelp } from "./components/LocalPreviewHelp";
 import { GeminiAgentTest } from "./components/GeminiAgentTest";
+import { ListOrderModal } from "./components/ListOrderModal";
 import {
   appendEvent,
   createSession,
@@ -15,6 +16,12 @@ import {
   type SessionRecord,
 } from "./lib/telemetry";
 import { appendFullQuickTest } from "./lib/runQuickTestBundle";
+import {
+  buildOrderedCatalog,
+  loadStoredCustomOrder,
+  saveStoredCustomOrder,
+  type ListOrderMode,
+} from "./lib/listOrder";
 
 type Tab = "a" | "b" | "c";
 
@@ -32,6 +39,10 @@ export function App() {
   const [tab, setTab] = useState<Tab>("a");
   const [session, setSession] = useState<SessionRecord | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [listOrderOpen, setListOrderOpen] = useState(false);
+  const [customOrderIds, setCustomOrderIds] = useState<string[] | null>(null);
+  const [lastListOrderInvalid, setLastListOrderInvalid] = useState<string[]>([]);
+  const [listRevision, setListRevision] = useState(0);
   const booted = useRef(false);
 
   const append = useCallback((type: string, payload: Record<string, unknown>) => {
@@ -42,6 +53,11 @@ export function App() {
       return n;
     });
   }, []);
+
+  const listBundle = useMemo(
+    () => buildOrderedCatalog(CATALOG, seed, customOrderIds),
+    [seed, customOrderIds]
+  );
 
   /** One-time auto start: no “open session” step. */
   useEffect(() => {
@@ -55,12 +71,52 @@ export function App() {
   }, []);
 
   useEffect(() => {
+    if (!session) return;
+    setCustomOrderIds(loadStoredCustomOrder(session.sessionId));
+    setLastListOrderInvalid([]);
+    setListRevision((r) => r + 1);
+  }, [session.sessionId]);
+
+  useEffect(() => {
     if (!window.location.search.includes("seed=")) {
       const u = new URL(window.location.href);
       u.searchParams.set("seed", String(seed));
       window.history.replaceState({}, "", u.toString());
     }
   }, [seed]);
+
+  const setSeedAndSession = useCallback((n: number) => {
+    setSeed(n);
+    setSession((prev) => {
+      if (!prev) return null;
+      const next = { ...prev, seed: n };
+      persistSession(next);
+      return next;
+    });
+    const u = new URL(window.location.href);
+    u.searchParams.set("seed", String(n));
+    window.history.replaceState({}, "", u.toString());
+    setListRevision((r) => r + 1);
+  }, []);
+
+  const applyListOrder = useCallback(
+    (mode: ListOrderMode, ids: string[] | null) => {
+      if (!session) return;
+      const nextIds = mode === "interleave" || !ids?.length ? null : ids;
+      setCustomOrderIds(nextIds);
+      saveStoredCustomOrder(session.sessionId, nextIds);
+      const res = buildOrderedCatalog(CATALOG, seed, nextIds);
+      setLastListOrderInvalid(res.invalidCustomIds);
+      append("coworker_list_order", {
+        orderMode: res.orderMode,
+        listOrderIds: res.ordered.map((m) => m.id),
+        invalidCustomIds: res.invalidCustomIds,
+        seed,
+      });
+      setListRevision((r) => r + 1);
+    },
+    [session, seed, append]
+  );
 
   const startFreshSession = useCallback(() => {
     const nextSeed = Math.floor(Math.random() * 1_000_000_000);
@@ -94,14 +150,26 @@ export function App() {
     downloadJson(session, `model-transparency-tester-${session.sessionId}.json`);
   };
 
+  const onVersionContextMenu = (e: MouseEvent) => {
+    e.preventDefault();
+    setListOrderOpen(true);
+  };
+
   return (
     <div className="app">
       <header className="header simple">
         <div>
           <h1>ModelTransparencyTester</h1>
           <p className="sub">
-            Log how people pick models (order, search, time)—all local, no model APIs. v
-            {getAppVersion()}
+            Log how people pick models (order, search, time)—all local, no model APIs.{" "}
+            <span
+              className="mtt-build"
+              onContextMenu={onVersionContextMenu}
+              title=""
+              aria-hidden="true"
+            >
+              v{getAppVersion()}
+            </span>
           </p>
         </div>
         <div className="header-actions">
@@ -133,7 +201,7 @@ export function App() {
               className="input short"
               type="number"
               value={seed}
-              onChange={(e) => setSeed(Number(e.target.value) || 0)}
+              onChange={(e) => setSeedAndSession(Number(e.target.value) || 0)}
             />
           </label>
           <span className="mono small">{session?.sessionId.slice(0, 8)}…</span>
@@ -144,6 +212,15 @@ export function App() {
           )}
         </div>
       )}
+
+      <ListOrderModal
+        open={listOrderOpen}
+        onClose={() => setListOrderOpen(false)}
+        orderMode={listBundle.orderMode}
+        customIdsText={customOrderIds?.join("\n") ?? ""}
+        lastInvalid={lastListOrderInvalid}
+        onApply={(mode, ids) => applyListOrder(mode, ids)}
+      />
 
       {session && (
         <>
@@ -179,9 +256,12 @@ export function App() {
 
           {tab === "a" && (
             <CoworkerTest
-              key={session.sessionId}
+              key={`${session.sessionId}-${listRevision}`}
               session={session}
               onAppend={append}
+              ordered={listBundle.ordered}
+              orderMode={listBundle.orderMode}
+              listSeed={seed}
             />
           )}
           {tab === "b" && (

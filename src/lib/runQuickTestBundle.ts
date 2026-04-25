@@ -1,5 +1,5 @@
 import { CATALOG } from "../models/catalog";
-import { interleaveByVendor } from "./shuffle";
+import { buildOrderedCatalog } from "./listOrder";
 import { SAMPLE_PRIMARY_ID, SAMPLE_SECONDARY_ID } from "./quickDefaults";
 import type { SessionRecord } from "./telemetry";
 import { appendHeadToHeadDemo } from "./runHeadToHeadDemo";
@@ -13,11 +13,11 @@ export function appendFullQuickTest(
   session: SessionRecord,
   onAppend: (type: string, payload: Record<string, unknown>) => void
 ) {
-  const ordered = interleaveByVendor(CATALOG, session.seed);
+  const { ordered } = buildOrderedCatalog(CATALOG, session.seed, null);
   const q = "";
   onAppend("coworker_search", {
     query: q,
-    resultCount: CATALOG.length,
+    resultCount: ordered.length,
     searchCommitIndex: 1,
     source: "demo_autorun",
   });
@@ -27,7 +27,7 @@ export function appendFullQuickTest(
     searchQuery: q,
     searchCommitCount: 1,
     msToSubmit: 0,
-    visibleCountAtSubmit: CATALOG.length,
+    visibleCountAtSubmit: ordered.length,
     listOrderIds: ordered.map((m) => m.id),
     source: "demo_autorun",
   });

@@ -28,6 +28,13 @@ There are **no sign-ins and no calls to model providers**—only a realistic-loo
 
 **Header**: download the current session or all sessions (JSONL), start a **new session**, and open **Options** to change the list **seed** or append the demo event bundle.
 
+<details>
+<summary><strong>Researchers: custom list order</strong> (does not change the participant-facing task copy)</summary>
+
+The default list is **seed + mixed vendor interleaving**. To run a **fixed** id order (e.g. position or adjacency tests), **right-click the build version** next to the title (the grey <code>v…</code> suffix). Enter one catalog model <code>id</code> per line (or comma-separated). Unknown ids are skipped; any models not listed are appended in default catalog order. **Use default order** restores the usual interleaved list. Settings are stored **per browser session**; exports include <code>coworker_list_order</code> and <code>orderMode</code> on events so analysis stays honest.
+
+</details>
+
 ---
 
 ## Data and privacy
