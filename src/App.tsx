@@ -80,7 +80,7 @@ export function App() {
     setCustomOrderIds(loadStoredCustomOrder(session.sessionId));
     setLastListOrderInvalid([]);
     setListRevision((r) => r + 1);
-  }, [session.sessionId]);
+  }, [session?.sessionId]);
 
   useEffect(() => {
     if (!window.location.search.includes("seed=")) {
