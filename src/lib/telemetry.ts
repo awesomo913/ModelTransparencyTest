@@ -17,7 +17,7 @@ export type SessionRecord = {
 };
 
 const STORAGE_KEY = "model-coworker-lab-sessions";
-const APP_VERSION = "1.1.0";
+const APP_VERSION = "1.3.0";
 
 function newId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {

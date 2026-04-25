@@ -67,12 +67,11 @@ export function HeadToHeadTest({ session, onAppend }: Props) {
   if (round >= TOTAL_ROUNDS) {
     return (
       <div className="panel">
-        <h2>Pairwise check — done</h2>
+        <h2>All {TOTAL_ROUNDS} rounds done</h2>
         <p>
-          Recorded {TOTAL_ROUNDS} comparisons for this run. Use Export in the header if you need a
-          file copy.
+          Use <strong>Download this session</strong> in the header for a file, or <strong>New session</strong> to start
+          over.
         </p>
-        <p className="hint small">Open a new work session in the header to run another pass.</p>
       </div>
     );
   }
@@ -80,12 +79,8 @@ export function HeadToHeadTest({ session, onAppend }: Props) {
   return (
     <div className="panel">
       <div className="panel-head">
-        <h2>Pairwise check</h2>
-        <p className="hint">
-          Two models at a time—pick the better fit for the line below. Order is fixed by your display
-          seed and step number so a second reviewer can reproduce the same sequence. No search on this
-          screen.
-        </p>
+        <h2>Compare two at a time</h2>
+        <p className="hint">Tap the side you prefer. There are {TOTAL_ROUNDS} short rounds.</p>
       </div>
       <div className="scenario">
         <span className="small muted">

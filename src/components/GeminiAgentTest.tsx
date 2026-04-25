@@ -208,14 +208,9 @@ export function GeminiAgentTest({ session, onAppend }: Props) {
     return (
       <div className="panel gemini">
         <div className="panel-head">
-          <h2>Gemini agent — structured assessment</h2>
-          <p className="hint">{GEMINI_DOC_BLURB}</p>
+          <h2>Optional: rate Gemini-style scenarios</h2>
+          <p className="hint">Skip this if you only want the first two tabs. {GEMINI_DOC_BLURB}</p>
         </div>
-        <p className="doc-ref muted small">
-          Conceptual map (external documentation): Agents overview, Interactions API, tools and
-          function calling, Deep Research agent — consult the current Google AI for Developers (Gemini
-          API) site; beta APIs and names change.
-        </p>
 
         <div className="form-block">
           <label className="label">Gemini product line to evaluate (expected behavior)</label>

@@ -32,19 +32,12 @@ export function LocalPreviewHelp() {
             </div>
             <div className="modal-body">
               <p>
-                This is a <strong>static front-end</strong> served by the Vite dev server. In the
-                project folder run <code>npm install</code> once, then <code>npm run dev</code>. Open
-                the URL it prints (usually <code>http://localhost:5173</code>) in Chrome or any
-                browser—same as any other local web app.
+                From this folder: <code>npm install</code> then <code>npm start</code>. A browser
+                opens to a local page—nothing is sent to model companies.
               </p>
               <p>
-                <strong>Network:</strong> The page does not call model vendors or GitHub. Selections,
-                rubric scores, and timing are written to the browser’s <code>localStorage</code> and
-                can be exported as JSON for routing audits or handoff to integration.
-              </p>
-              <p>
-                <strong>Display seed:</strong> Optional number so the model list order matches between
-                runs when validating UI or screenshots. It is not a network credential.
+                Data you save lives in this browser until you use <strong>Download this session</strong>{" "}
+                (JSON file). <strong>Options</strong> in the header can change the list seed.
               </p>
             </div>
             <div className="modal-foot">

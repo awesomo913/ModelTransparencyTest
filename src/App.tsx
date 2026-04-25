@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CATALOG } from "./models/catalog";
 import { CoworkerTest } from "./components/CoworkerTest";
 import { HeadToHeadTest } from "./components/HeadToHeadTest";
@@ -14,6 +14,7 @@ import {
   persistSession,
   type SessionRecord,
 } from "./lib/telemetry";
+import { appendFullQuickTest } from "./lib/runQuickTestBundle";
 
 type Tab = "a" | "b" | "c";
 
@@ -26,17 +27,12 @@ function readSeed() {
 }
 
 export function App() {
-  const [seed, setSeed] = useState(readSeed);
+  const initialSeed = useRef(readSeed());
+  const [seed, setSeed] = useState(() => initialSeed.current);
   const [tab, setTab] = useState<Tab>("a");
-  const [notes, setNotes] = useState("");
   const [session, setSession] = useState<SessionRecord | null>(null);
-
-  const startSession = useCallback(() => {
-    const s = createSession(seed, notes.trim() || "default");
-    const s2 = appendEvent(s, "session_start", { seed, catalogSize: CATALOG.length });
-    setSession(s2);
-    persistSession(s2);
-  }, [seed, notes]);
+  const [showDetails, setShowDetails] = useState(false);
+  const booted = useRef(false);
 
   const append = useCallback((type: string, payload: Record<string, unknown>) => {
     setSession((prev) => {
@@ -47,6 +43,17 @@ export function App() {
     });
   }, []);
 
+  /** One-time auto start: no “open session” step. */
+  useEffect(() => {
+    if (booted.current) return;
+    booted.current = true;
+    const s0 = initialSeed.current;
+    const s = createSession(s0, "auto");
+    const s2 = appendEvent(s, "session_start", { seed: s0, catalogSize: CATALOG.length });
+    setSession(s2);
+    persistSession(s2);
+  }, []);
+
   useEffect(() => {
     if (!window.location.search.includes("seed=")) {
       const u = new URL(window.location.href);
@@ -55,80 +62,86 @@ export function App() {
     }
   }, [seed]);
 
+  const startFreshSession = useCallback(() => {
+    const nextSeed = Math.floor(Math.random() * 1_000_000_000);
+    setSeed(nextSeed);
+    const s = createSession(nextSeed, "auto");
+    const s2 = appendEvent(s, "session_start", { seed: nextSeed, catalogSize: CATALOG.length });
+    setSession(s2);
+    persistSession(s2);
+    setTab("a");
+  }, []);
+
+  const loadSampleBundle = useCallback(() => {
+    if (!session) return;
+    appendFullQuickTest(session, append);
+    alert(
+      "Sample data was added to your log (directory + pairwise + Gemini). Use Export to download JSON if you want a file."
+    );
+  }, [session, append]);
+
   const exportAll = () => {
     const all = listSessions();
     if (all.length === 0) {
-      alert("No saved workspace sessions yet. Open a work session and save selections first.");
+      alert("Nothing saved yet.");
       return;
     }
     downloadJsonl(all, `workspace-routing-export-${Date.now()}.jsonl`);
   };
 
   const exportCurrent = () => {
-    if (!session) {
-      alert("Open a work session first.");
-      return;
-    }
+    if (!session) return;
     downloadJson(session, `workspace-routing-session-${session.sessionId}.json`);
   };
 
   return (
     <div className="app">
-      <header className="header">
+      <header className="header simple">
         <div>
-          <h1>Workspace model routing</h1>
+          <h1>Code review</h1>
           <p className="sub">
-            Policy UI for primary / backup model selection (preview). Runs entirely in the
-            browser—no live API calls. v{getAppVersion()} · {CATALOG.length} models in directory
+            In-browser only; nothing is sent to a model. v{getAppVersion()}
           </p>
         </div>
         <div className="header-actions">
+          <button type="button" className="btn" onClick={exportCurrent}>
+            Download this session
+          </button>
+          <button type="button" className="btn secondary" onClick={exportAll}>
+            Download all
+          </button>
+          <button type="button" className="btn secondary" onClick={startFreshSession}>
+            New session
+          </button>
+          <button
+            type="button"
+            className="btn text"
+            onClick={() => setShowDetails((v) => !v)}
+          >
+            {showDetails ? "Hide options" : "Options"}
+          </button>
           <LocalPreviewHelp />
+        </div>
+      </header>
+
+      {showDetails && (
+        <div className="details-bar">
           <label className="inline">
-            Display seed{" "}
+            Seed (order of lists){" "}
             <input
               className="input short"
               type="number"
               value={seed}
               onChange={(e) => setSeed(Number(e.target.value) || 0)}
-              title="Stabilizes list order for the same policy review or screenshots."
             />
           </label>
-          <input
-            className="input mid"
-            placeholder="Label (org, team, or ticket)"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          />
-          {!session ? (
-            <button type="button" className="btn" onClick={startSession}>
-              Open work session
+          <span className="mono small">{session?.sessionId.slice(0, 8)}…</span>
+          {session && (
+            <button type="button" className="btn secondary" onClick={loadSampleBundle}>
+              Append demo events (all tabs)
             </button>
-          ) : (
-            <>
-              <span className="mono small" title="Session id">
-                {session.sessionId.slice(0, 8)}…
-              </span>
-              <button type="button" className="btn secondary" onClick={exportCurrent}>
-                Export session
-              </button>
-            </>
           )}
-          <button type="button" className="btn secondary" onClick={exportAll}>
-            Export all
-          </button>
         </div>
-      </header>
-
-      {!session && (
-        <p className="banner">
-          Optional display seed and label, then <strong>Open work session</strong>. Use{" "}
-          <strong>Directory</strong> to search and set models; <strong>Pairwise</strong> for A/B;{" "}
-          <strong>Gemini agent</strong> for a structured multi-scenario rubric (wizard auto-saves to{" "}
-          <code>sessionStorage</code> on tab switch). Exports write full sessions to{" "}
-          <code>localStorage</code>. Directory and Pairwise do not persist across tab switches until
-          you export.
-        </p>
       )}
 
       {session && (
@@ -141,7 +154,7 @@ export function App() {
               role="tab"
               aria-selected={tab === "a"}
             >
-              Directory
+              1 · PR review
             </button>
             <button
               type="button"
@@ -150,7 +163,7 @@ export function App() {
               role="tab"
               aria-selected={tab === "b"}
             >
-              Pairwise
+              2 · Compare two
             </button>
             <button
               type="button"
@@ -159,7 +172,7 @@ export function App() {
               role="tab"
               aria-selected={tab === "c"}
             >
-              Gemini agent
+              3 · Gemini rubric
             </button>
           </nav>
 
@@ -188,10 +201,7 @@ export function App() {
       )}
 
       <footer className="footer">
-        <p className="footer-lead">
-          Internal routing preview. Exports are for policy review, integration, or compliance
-          handoff—not live enforcement.
-        </p>
+        <p className="footer-lead">Preview only. Export JSON for your own records.</p>
       </footer>
     </div>
   );

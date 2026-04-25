@@ -1,31 +1,13 @@
 # Workspace model routing (local preview)
 
-Browser-only UI for exploring model directory, pairwise choices, and a structured Gemini-oriented agent rubric. **No calls to model providers**—data stays in `localStorage` / `sessionStorage` until you export JSON.
+A static Vite + React UI for **choosing primary and backup coding models** in a code-review–style flow. No sign-in; **no model APIs** are called. Selections and timing can be exported as JSON from the browser.
 
 ## Run
 
-```bash
-npm install
-npm run dev
-```
+1. `npm install`
+2. `npm start` or `npm run dev` (dev server may open Chrome)
+3. Use **PR review** to pick models, optional **Compare two** and **Gemini rubric** tabs, then **Download this session** when you want a file.
 
-Open the URL Vite prints (usually `http://localhost:5173`).
+Under **Options**: change list **seed**, append demo events for all tabs, or start a **new session**.
 
-## Build
-
-```bash
-npm run build
-npm run preview   # optional: serve dist/
-```
-
-## Export analysis
-
-After recording sessions, download JSON from the app, then:
-
-```bash
-node scripts/summarize-sessions.mjs path/to/export.jsonl
-```
-
-## License
-
-MIT
+MIT license.

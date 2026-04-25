@@ -1,5 +1,5 @@
 /**
- * Fictional “registry” of coding-assistant / LLM products for the lab UI.
+ * Fictional registry of coding-assistant / LLM product names for the UI.
  * Names mirror real families; this app does not call any provider APIs.
  */
 export type VendorId =
@@ -39,54 +39,35 @@ export const VENDOR_LABEL: Record<VendorId, string> = {
 };
 
 export const CATALOG: ModelEntry[] = [
-  {
-    id: "claude-opus-4-5",
-    vendor: "anthropic",
-    displayName: "Claude Opus 4.5",
-    searchBlob: "anthropic claude opus reasoning agent largest",
-  },
-  {
-    id: "claude-sonnet-4-5",
-    vendor: "anthropic",
-    displayName: "Claude Sonnet 4.5",
-    searchBlob: "anthropic claude sonnet coding balanced",
-  },
-  {
-    id: "claude-sonnet-4-6",
-    vendor: "anthropic",
-    displayName: "Claude Sonnet 4.6",
-    searchBlob: "anthropic claude sonnet newest",
-  },
-  {
-    id: "claude-opus-4-1",
-    vendor: "anthropic",
-    displayName: "Claude Opus 4.1",
-    searchBlob: "anthropic claude opus prior",
-  },
-  {
-    id: "claude-4-0-opus",
-    vendor: "anthropic",
-    displayName: "Claude 4 Opus (legacy line)",
-    searchBlob: "anthropic claude 4",
-  },
-  {
-    id: "claude-3-7-sonnet",
-    vendor: "anthropic",
-    displayName: "Claude 3.7 Sonnet",
-    searchBlob: "anthropic 3.7",
-  },
-  {
-    id: "claude-3-5-sonnet",
-    vendor: "anthropic",
-    displayName: "Claude 3.5 Sonnet",
-    searchBlob: "anthropic 3.5 workhorse",
-  },
-  {
-    id: "claude-3-5-haiku",
-    vendor: "anthropic",
-    displayName: "Claude 3.5 Haiku",
-    searchBlob: "anthropic fast cheap",
-  },
+  // —— Anthropic / Claude (exhaustive product-style lines for search & blind layouts) ——
+  { id: "claude-opus-4-5", vendor: "anthropic", displayName: "Claude Opus 4.5", searchBlob: "anthropic claude opus 4.5 max reasoning" },
+  { id: "claude-opus-4-1", vendor: "anthropic", displayName: "Claude Opus 4.1", searchBlob: "anthropic claude opus 4.1" },
+  { id: "claude-opus-4-0", vendor: "anthropic", displayName: "Claude Opus 4.0", searchBlob: "anthropic claude opus 4.0" },
+  { id: "claude-sonnet-4-6", vendor: "anthropic", displayName: "Claude Sonnet 4.6", searchBlob: "anthropic claude sonnet 4.6 latest" },
+  { id: "claude-sonnet-4-5", vendor: "anthropic", displayName: "Claude Sonnet 4.5", searchBlob: "anthropic claude sonnet 4.5 coding" },
+  { id: "claude-sonnet-4-0", vendor: "anthropic", displayName: "Claude Sonnet 4.0", searchBlob: "anthropic claude sonnet 4.0" },
+  { id: "claude-haiku-4-5", vendor: "anthropic", displayName: "Claude Haiku 4.5", searchBlob: "anthropic claude haiku 4.5 fast" },
+  { id: "claude-haiku-4-0", vendor: "anthropic", displayName: "Claude Haiku 4.0", searchBlob: "anthropic claude haiku 4.0" },
+  { id: "claude-3-7-sonnet", vendor: "anthropic", displayName: "Claude 3.7 Sonnet", searchBlob: "anthropic claude 3.7 sonnet" },
+  { id: "claude-3-5-sonnet-2024-10-22", vendor: "anthropic", displayName: "Claude 3.5 Sonnet (2024-10-22)", searchBlob: "anthropic claude 3.5 sonnet date sku" },
+  { id: "claude-3-5-sonnet", vendor: "anthropic", displayName: "Claude 3.5 Sonnet (default)", searchBlob: "anthropic claude 3.5 sonnet" },
+  { id: "claude-3-5-haiku", vendor: "anthropic", displayName: "Claude 3.5 Haiku", searchBlob: "anthropic claude 3.5 haiku" },
+  { id: "claude-3-opus", vendor: "anthropic", displayName: "Claude 3 Opus", searchBlob: "anthropic claude 3 opus" },
+  { id: "claude-3-sonnet-2024-02-29", vendor: "anthropic", displayName: "Claude 3 Sonnet (2024-02-29)", searchBlob: "anthropic claude 3 sonnet" },
+  { id: "claude-3-sonnet", vendor: "anthropic", displayName: "Claude 3 Sonnet", searchBlob: "anthropic claude 3 sonnet" },
+  { id: "claude-3-haiku", vendor: "anthropic", displayName: "Claude 3 Haiku", searchBlob: "anthropic claude 3 haiku" },
+  { id: "claude-2-1", vendor: "anthropic", displayName: "Claude 2.1", searchBlob: "anthropic claude 2.1 context" },
+  { id: "claude-2-0", vendor: "anthropic", displayName: "Claude 2.0", searchBlob: "anthropic claude 2" },
+  { id: "claude-instant-1-2", vendor: "anthropic", displayName: "Claude Instant 1.2 (legacy)", searchBlob: "anthropic claude instant legacy" },
+  { id: "claude-1-3", vendor: "anthropic", displayName: "Claude 1.3 (archived line)", searchBlob: "anthropic claude 1" },
+  { id: "claude-4-0-umbrella", vendor: "anthropic", displayName: "Claude 4 (family, org default)", searchBlob: "anthropic claude 4 org routing" },
+  { id: "claude-bedrock-sonnet-3-5", vendor: "anthropic", displayName: "Claude 3.5 Sonnet (cloud marketplace SKU)", searchBlob: "anthropic claude bedrock sonnet" },
+  { id: "claude-vertex-opus-4", vendor: "anthropic", displayName: "Claude Opus 4 (cloud enterprise route)", searchBlob: "anthropic claude vertex opus" },
+  { id: "claude-4-0-opus-legacy", vendor: "anthropic", displayName: "Claude 4 Opus (prior naming)", searchBlob: "anthropic claude 4 opus legacy" },
+  { id: "claude-sonnet-3-5-extended", vendor: "anthropic", displayName: "Claude 3.5 Sonnet (long context tier)", searchBlob: "anthropic claude 3.5 long context" },
+  { id: "claude-haiku-3-5", vendor: "anthropic", displayName: "Claude 3.5 Haiku (throughput)", searchBlob: "anthropic claude 3.5 haiku" },
+  { id: "claude-research-sonnet-4-5", vendor: "anthropic", displayName: "Claude Sonnet 4.5 (research / agent SKU)", searchBlob: "anthropic claude research agent sonnet" },
+  { id: "claude-coding-sonnet-4-5", vendor: "anthropic", displayName: "Claude Sonnet 4.5 (coding-optimized route)", searchBlob: "anthropic claude coding ide sonnet" },
   {
     id: "gpt-5-2",
     vendor: "openai",
