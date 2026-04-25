@@ -67,10 +67,30 @@ export function parseIdList(input: string): string[] {
   return lines;
 }
 
+const orderKey = (sessionId: string) => `lo-${sessionId}`;
+const legacyOrderKey = (sessionId: string) => `mtt-list-order-${sessionId}`;
+
+function readOrderFromStorage(sessionId: string): string | null {
+  const k = orderKey(sessionId);
+  let raw = localStorage.getItem(k);
+  if (raw == null) {
+    const old = legacyOrderKey(sessionId);
+    raw = localStorage.getItem(old);
+    if (raw != null) {
+      try {
+        localStorage.setItem(k, raw);
+        localStorage.removeItem(old);
+      } catch {
+        // ignore
+      }
+    }
+  }
+  return raw;
+}
+
 export function loadStoredCustomOrder(sessionId: string): string[] | null {
   try {
-    const k = `mtt-list-order-${sessionId}`;
-    const raw = localStorage.getItem(k);
+    const raw = readOrderFromStorage(sessionId);
     if (raw == null) return null;
     const p = JSON.parse(raw) as unknown;
     if (!Array.isArray(p)) return null;
@@ -82,13 +102,13 @@ export function loadStoredCustomOrder(sessionId: string): string[] | null {
 
 export function saveStoredCustomOrder(sessionId: string, ids: string[] | null) {
   try {
-    const k = `mtt-list-order-${sessionId}`;
+    const k = orderKey(sessionId);
     if (ids == null || ids.length === 0) {
       localStorage.removeItem(k);
     } else {
       localStorage.setItem(k, JSON.stringify(ids));
     }
   } catch (e) {
-    console.warn("ModelTransparencyTester: could not save list order to localStorage", e);
+    console.warn("[app] could not save list order to localStorage", e);
   }
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-/** Explains that ModelTransparencyTester is fully local to the machine. */
+/** Short explanation of local-only behavior (no product name in copy). */
 export function LocalPreviewHelp() {
   const [open, setOpen] = useState(false);
 
@@ -30,15 +30,14 @@ export function LocalPreviewHelp() {
             </div>
             <div className="modal-body">
               <p>
-                <strong>ModelTransparencyTester</strong> runs only in your browser. From this
-                project folder: <code>npm install</code> then <code>npm start</code> (or{" "}
-                <code>npm run dev</code>). The page may open automatically—no traffic is sent to
-                model companies.
+                This page runs only in your browser. From the project folder: <code>npm install</code>{" "}
+                then <code>npm start</code> (or <code>npm run dev</code>). The page may open
+                automatically. Nothing is sent to model companies.
               </p>
               <p>
-                Events are stored in this browser until you <strong>Download this session</strong> or{" "}
-                <strong>Download all</strong> (JSON / JSONL). Use <strong>Options</strong> to set the
-                catalog <strong>seed</strong> (order of the mixed list) or append a demo log.
+                Data stays in this browser until you <strong>Download this session</strong> or{" "}
+                <strong>Download all</strong> (JSON / JSONL). <strong>Options</strong> can change the
+                list <strong>seed</strong> (how the list is mixed) or append a demo log.
               </p>
             </div>
             <div className="modal-foot">

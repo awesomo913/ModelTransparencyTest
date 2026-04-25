@@ -32,13 +32,13 @@ export function ListOrderModal({
       className="modal-backdrop"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="mtt-list-order-title"
+      aria-labelledby="list-order-title"
       onClick={onClose}
       onKeyDown={(e) => e.key === "Escape" && onClose()}
     >
       <div className="modal modal-wide" onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
-          <h2 id="mtt-list-order-title">List order</h2>
+          <h2 id="list-order-title">List order</h2>
           <button type="button" className="btn icon" onClick={onClose} aria-label="Close">
             ×
           </button>

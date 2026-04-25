@@ -977,7 +977,7 @@ code {
   border-top: 1px solid var(--border);
 }
 
-.mtt-build {
+.ver-suffix {
   cursor: default;
   user-select: none;
   color: var(--muted);

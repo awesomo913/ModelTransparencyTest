@@ -29,7 +29,7 @@ export function HeadToHeadTest({ session, onAppend }: Props) {
 
   const mountLogged = useRef(false);
   useEffect(() => {
-    const key = `wsr-mount-${session.sessionId}-h2h`;
+    const key = `h2h-mount-${session.sessionId}`;
     if (mountLogged.current || sessionStorage.getItem(key)) return;
     mountLogged.current = true;
     sessionStorage.setItem(key, "1");

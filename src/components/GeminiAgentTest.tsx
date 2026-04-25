@@ -116,7 +116,7 @@ export function GeminiAgentTest({ session, onAppend }: Props) {
   ]);
 
   useEffect(() => {
-    const key = `wsr-mount-${session.sessionId}-gemini`;
+    const key = `rubric-mount-${session.sessionId}`;
     if (mountLogged.current || sessionStorage.getItem(key)) return;
     mountLogged.current = true;
     sessionStorage.setItem(key, "1");

@@ -16,10 +16,12 @@ export type SessionRecord = {
   notes: string;
 };
 
-const STORAGE_KEY = "model-transparency-tester-sessions";
-/** Earlier builds used this key; we migrate once so existing local logs are kept. */
-const LEGACY_STORAGE_KEY = "model-coworker-lab-sessions";
-const APP_VERSION = "1.5.1";
+const STORAGE_KEY = "review-sessions-v1";
+const LEGACY_SESSION_KEYS = [
+  "model-transparency-tester-sessions",
+  "model-coworker-lab-sessions",
+] as const;
+const APP_VERSION = "1.5.2";
 
 function newId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -32,10 +34,14 @@ function migrateLegacyStorageIfNeeded() {
   if (typeof localStorage === "undefined") return;
   try {
     if (localStorage.getItem(STORAGE_KEY)) return;
-    const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
-    if (!legacy) return;
-    localStorage.setItem(STORAGE_KEY, legacy);
-    localStorage.removeItem(LEGACY_STORAGE_KEY);
+    for (const k of LEGACY_SESSION_KEYS) {
+      const legacy = localStorage.getItem(k);
+      if (legacy) {
+        localStorage.setItem(STORAGE_KEY, legacy);
+        localStorage.removeItem(k);
+        return;
+      }
+    }
   } catch {
     // ignore
   }
@@ -58,7 +64,7 @@ function saveAll(rows: SessionRecord[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(rows, null, 0));
   } catch (e) {
-    console.warn("ModelTransparencyTester: could not save sessions to localStorage", e);
+    console.warn("[app] could not save sessions to localStorage", e);
   }
 }
 
@@ -93,7 +99,7 @@ export function persistSession(session: SessionRecord) {
     else all.push(session);
     saveAll(all);
   } catch (e) {
-    console.warn("ModelTransparencyTester: persistSession failed", e);
+    console.warn("[app] persistSession failed", e);
   }
 }
 

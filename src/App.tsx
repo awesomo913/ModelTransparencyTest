@@ -56,7 +56,7 @@ export function App() {
       }
       return s2;
     } catch (e) {
-      console.error("ModelTransparencyTester: session init failed", e);
+      console.error("[app] session init failed", e);
       return null;
     }
   });
@@ -147,12 +147,12 @@ export function App() {
       alert("Nothing saved yet.");
       return;
     }
-    downloadJsonl(all, `model-transparency-tester-sessions-${Date.now()}.jsonl`);
+    downloadJsonl(all, `review-sessions-${Date.now()}.jsonl`);
   };
 
   const exportCurrent = () => {
     if (!session) return;
-    downloadJson(session, `model-transparency-tester-${session.sessionId}.json`);
+    downloadJson(session, `review-session-${session.sessionId}.json`);
   };
 
   const onVersionContextMenu = (e: MouseEvent) => {
@@ -164,11 +164,11 @@ export function App() {
     <div className="app">
       <header className="header simple">
         <div>
-          <h1>ModelTransparencyTester</h1>
+          <h1>Code review</h1>
           <p className="sub">
-            Log how people pick models (order, search, time)—all local, no model APIs.{" "}
+            Choose a main and backup model for the assistant. Everything runs in this browser.{" "}
             <span
-              className="mtt-build"
+              className="ver-suffix"
               onContextMenu={onVersionContextMenu}
               title=""
               aria-hidden="true"
@@ -297,8 +297,8 @@ export function App() {
 
       <footer className="footer">
         <p className="footer-lead">
-          ModelTransparencyTester does not call providers. Export JSON/JSONL for your own
-          analysis.
+          This page does not call out to model companies. You can download JSON for your own
+          records.
         </p>
       </footer>
     </div>
