@@ -1,15 +1,13 @@
 import { useState } from "react";
 
-/**
- * Boring, product-shaped copy: explains local Vite/Chrome without sounding like a lab instrument.
- */
+/** Explains that ModelTransparencyTester is fully local to the machine. */
 export function LocalPreviewHelp() {
   const [open, setOpen] = useState(false);
 
   return (
     <>
       <button type="button" className="btn text" onClick={() => setOpen(true)}>
-        How this runs locally
+        How this works locally
       </button>
       {open && (
         <div
@@ -32,12 +30,15 @@ export function LocalPreviewHelp() {
             </div>
             <div className="modal-body">
               <p>
-                From this folder: <code>npm install</code> then <code>npm start</code>. A browser
-                opens to a local page—nothing is sent to model companies.
+                <strong>ModelTransparencyTester</strong> runs only in your browser. From this
+                project folder: <code>npm install</code> then <code>npm start</code> (or{" "}
+                <code>npm run dev</code>). The page may open automatically—no traffic is sent to
+                model companies.
               </p>
               <p>
-                Data you save lives in this browser until you use <strong>Download this session</strong>{" "}
-                (JSON file). <strong>Options</strong> in the header can change the list seed.
+                Events are stored in this browser until you <strong>Download this session</strong> or{" "}
+                <strong>Download all</strong> (JSON / JSONL). Use <strong>Options</strong> to set the
+                catalog <strong>seed</strong> (order of the mixed list) or append a demo log.
               </p>
             </div>
             <div className="modal-foot">

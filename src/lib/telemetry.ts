@@ -16,8 +16,10 @@ export type SessionRecord = {
   notes: string;
 };
 
-const STORAGE_KEY = "model-coworker-lab-sessions";
-const APP_VERSION = "1.3.0";
+const STORAGE_KEY = "model-transparency-tester-sessions";
+/** Earlier builds used this key; we migrate once so existing local logs are kept. */
+const LEGACY_STORAGE_KEY = "model-coworker-lab-sessions";
+const APP_VERSION = "1.4.0";
 
 function newId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -26,8 +28,22 @@ function newId() {
   return `sess-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
+function migrateLegacyStorageIfNeeded() {
+  if (typeof localStorage === "undefined") return;
+  try {
+    if (localStorage.getItem(STORAGE_KEY)) return;
+    const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (!legacy) return;
+    localStorage.setItem(STORAGE_KEY, legacy);
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
+  } catch {
+    // ignore
+  }
+}
+
 function loadAll(): SessionRecord[] {
   try {
+    migrateLegacyStorageIfNeeded();
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as unknown;

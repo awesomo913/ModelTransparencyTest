@@ -47,7 +47,7 @@ export function CoworkerTest({
   );
 
   useEffect(() => {
-    const key = `wsr-mount-${session.sessionId}-coworker`;
+    const key = `mtt-mount-${session.sessionId}-coworker`;
     if (mountLogged.current || sessionStorage.getItem(key)) return;
     mountLogged.current = true;
     sessionStorage.setItem(key, "1");

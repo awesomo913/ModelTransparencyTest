@@ -1,7 +1,8 @@
 {
-  "name": "workspace-model-routing",
+  "name": "model-transparency-tester",
+  "description": "Local browser app for logging model choice behavior (search, order, time) with no model APIs—for transparency and blind-study style experiments.",
   "private": true,
-  "version": "1.3.0",
+  "version": "1.4.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

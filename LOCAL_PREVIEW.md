@@ -1,11 +1,13 @@
-# Running the workspace routing UI in Chrome
+# Running ModelTransparencyTester locally
 
-This folder is a normal Vite + React front end. Nothing here calls external model APIs.
+This project is a **Vite + React** app. The UI **never** calls model providers; it only records your interactions for export as JSON/JSONL.
 
-1. Install once: `npm install`
-2. Start the dev server: `npm run dev`
-3. Open the URL Vite prints (typically `http://localhost:5173`) in Chrome.
+1. `npm install`
+2. `npm start` (or `npm run dev`)
+3. Open the URL the terminal prints (commonly `http://localhost:5173`).
 
-The page is a static policy/directory preview: model names are for selection and export only. There is also a **Gemini agent** tab with multi-scenario rubric definitions (still no live API). State is kept in the browser’s `localStorage` until you use Export.
+**Options** in the header: change the list **seed** (order of the mixed catalog) or **Append demo events** to populate the log without manual clicks.
 
-The in-app button **How this runs locally** repeats the same points for anyone sharing a screen or pasting context into another tool.
+State is held in the browser’s `localStorage` until you use **Download this session** or **Download all**.
+
+The in-app **How this runs locally** button shows the same summary for people watching a screen share.

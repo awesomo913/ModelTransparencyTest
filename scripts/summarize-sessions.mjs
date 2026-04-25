@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Summarize exported JSONL from Model Coworker Lab.
+ * Summarize JSONL session exports from ModelTransparencyTester
+ * (pairwise wins, directory primary picks, Gemini completions).
  * Usage: node scripts/summarize-sessions.mjs path/to/sessions.jsonl
  */
 import { readFileSync, existsSync } from "node:fs";

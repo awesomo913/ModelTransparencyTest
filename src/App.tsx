@@ -86,21 +86,22 @@ export function App() {
       alert("Nothing saved yet.");
       return;
     }
-    downloadJsonl(all, `workspace-routing-export-${Date.now()}.jsonl`);
+    downloadJsonl(all, `model-transparency-tester-sessions-${Date.now()}.jsonl`);
   };
 
   const exportCurrent = () => {
     if (!session) return;
-    downloadJson(session, `workspace-routing-session-${session.sessionId}.json`);
+    downloadJson(session, `model-transparency-tester-${session.sessionId}.json`);
   };
 
   return (
     <div className="app">
       <header className="header simple">
         <div>
-          <h1>Code review</h1>
+          <h1>ModelTransparencyTester</h1>
           <p className="sub">
-            In-browser only; nothing is sent to a model. v{getAppVersion()}
+            Log how people pick models (order, search, time)—all local, no model APIs. v
+            {getAppVersion()}
           </p>
         </div>
         <div className="header-actions">
@@ -201,7 +202,10 @@ export function App() {
       )}
 
       <footer className="footer">
-        <p className="footer-lead">Preview only. Export JSON for your own records.</p>
+        <p className="footer-lead">
+          ModelTransparencyTester does not call providers. Export JSON/JSONL for your own
+          analysis.
+        </p>
       </footer>
     </div>
   );
